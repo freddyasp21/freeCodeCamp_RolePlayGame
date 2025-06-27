@@ -1,7 +1,7 @@
 let xp = 0;
 let health = 100;
 let gold = 50;
-let currentWeaponIndex = 0;
+let currentWeapon = 0;
 let fighting;
 let monsterHealth;
 let inventory = ["stick"];
@@ -72,7 +72,7 @@ const locations = [
     name: "kill monster",
     "button text": ["Go to town square", "Go to town square", "easterEgg"],
     "button functions": [goTown, goTown, goTown],
-    text: "The monster screams Arg! as it dies. You gain experience points and find gold.",
+    text: 'The monster screams "Arg!" as it dies. You gain experience points and find gold.',
   },
   {
     name: "lose",
@@ -80,7 +80,6 @@ const locations = [
     "button functions": [restart, restart, restart],
     text: "You die. &#x2620;",
   },
-  ,
   {
     name: "win",
     "button text": ["REPLAY?", "REPLAY?", "REPLAY?"],
@@ -135,12 +134,12 @@ function buyHealth() {
 }
 
 function buyWeapon() {
-  if (currentWeaponIndex < weapons.length - 1) {
+  if (currentWeapon < weapons.length - 1) {
     if (gold >= 30) {
       gold -= 30;
-      currentWeaponIndex++;
+      currentWeapon++;
       goldText.innerText = gold;
-      let newWeapon = weapons[currentWeaponIndex].name;
+      let newWeapon = weapons[currentWeapon].name;
       text.innerText = "You now have a " + newWeapon + ".";
       inventory.push(newWeapon);
       text.innerText += " In your inventory you have: " + inventory;
@@ -186,17 +185,17 @@ function goFight() {
   monsterHealth = monsters[fighting].health;
   monsterStats.style.display = "block";
   monsterName.innerText = monsters[fighting].name;
-  monsterHealthText.innerText = monsterHealthText;
+  monsterHealthText.innerText = monsterHealth;
 }
 
 function attack() {
   text.innerText = "The " + monsters[fighting].name + " attacks.";
   text.innerText +=
-    " You attack it with your " + weapons[currentWeaponIndex].name + ".";
+    " You attack it with your " + weapons[currentWeapon].name + ".";
   health -= getMonsterAttackValue(monsters[fighting].level);
   if (isMonsterHit()) {
     monsterHealth -=
-      weapons[currentWeaponIndex].power + Math.floor(Math.random() * xp) + 1;
+      weapons[currentWeapon].power + Math.floor(Math.random() * xp) + 1;
   } else {
     text.innerText += " You miss.";
   }
@@ -213,7 +212,7 @@ function attack() {
   }
   if (Math.random() <= 0.1 && inventory.length !== 1) {
     text.innerText += " Your " + inventory.pop() + " breaks.";
-    currentWeaponIndex--;
+    currentWeapon--;
   }
 }
 
@@ -251,17 +250,24 @@ function restart() {
   xp = 0;
   health = 100;
   gold = 50;
-  currentWeaponIndex = 0;
+  currentWeapon = 0;
   inventory = ["stick"];
   goldText.innerText = gold;
   healthText.innerText = health;
   xpText.innerText = xp;
-
   goTown();
 }
 
 function easterEgg() {
   update(locations[7]);
+}
+
+function pickTwo() {
+  pick(2);
+}
+
+function pickEight() {
+  pick(8);
 }
 
 function pick(guess) {
@@ -285,12 +291,4 @@ function pick(guess) {
       lose();
     }
   }
-}
-
-function pickTwo() {
-  pick(2);
-}
-
-function pickEight() {
-  pick(8);
 }
